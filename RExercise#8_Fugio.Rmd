@@ -1,0 +1,161 @@
+---
+title: "Exercise 8"
+author: "Leonides Fugio Jr."
+date: "2026-11-04"
+output: html_document
+---
+
+## Part A — Creating Vectors & Sorting
+
+### Question #1
+
+#### a. Create a vector of student scores with names
+```{r}
+scores <- c(Ana = 78, Ben = 92, Cid = 85, Dex = 92, Eli = 67, Fay = 88, Gio = 74)
+scores
+```
+
+#### b. Sort scores in ascending and descending order
+```{r}
+sort(scores)
+sort(scores, decreasing = TRUE)
+```
+
+#### c. Print sorted result and check if names stayed attached
+```{r}
+sorted_scores <- sort(scores)
+sorted_scores
+```
+*(Your answer here)*: Yes, the names remain correctly attached to their respective score values because named vectors preserve their element names during `sort()`.
+
+#### d. Create `subjects` and `incomplete` vectors
+```{r}
+subjects <- c("Science", "Math", "English", "History", "ICT")
+incomplete <- c(85, NA, 90, 70, NA, 95)
+```
+
+#### e. Sort subjects alphabetically using `sort()`
+```{r}
+sort(subjects)
+```
+
+#### f. Sort incomplete using `sort()` and `na.last = TRUE`
+```{r}
+sort(incomplete)
+sort(incomplete, na.last = TRUE)
+```
+
+---
+
+### Question #2
+*When you sorted scores, did the names stay correctly attached to their original values? Explain why this matters.*
+
+**Answer:**
+Yes, they stayed attached. This matters because if names detached from values during sorting, you would misattribute exam scores to the wrong students, leading to false evaluations.
+
+---
+
+### Question #3
+*By default, `sort()` silently removes `NA` values. Why might this default behavior be dangerous if you were reporting "the lowest score"?*
+
+**Answer:**
+It is dangerous because missing data (`NA`) is silently ignored rather than flagged or treated as the true minimum, which can skew statistical reporting and hide data collection errors.
+
+---
+
+### Question #4
+*Use `order(scores)` and print the result. Compare to `sort(scores)`.*
+
+```{r}
+order(scores)
+```
+**Answer:**
+`order()` returns the numeric index positions of the elements in sorted order rather than the actual score values returned by `sort()`.
+
+#### a. Index scores using `order(scores)`
+```{r}
+scores[order(scores)]
+```
+**Answer:**
+Yes, indexing `scores` with `order(scores)` produces the exact same sorted values as `sort(scores)`.
+
+---
+
+### Question #5
+*Create a data frame and reorder it.*
+
+```{r}
+students <- data.frame(
+  name = c("Ana", "Ben", "Cid", "Dex", "Eli", "Fay", "Gio"),
+  score = c(78, 92, 85, 92, 67, 88, 74),
+  section = c("A", "B", "A", "B", "A", "B", "A")
+)
+students
+
+# a. Reorder entire data frame by score ascending
+students[order(students$score), ]
+
+# b. Reorder by score in descending order
+students[order(students$score, decreasing = TRUE), ]
+```
+
+---
+
+### Question #6
+*Explain what `order(scores)` returns and why that output is useless on its own.*
+
+**Answer:**
+`order(scores)` returns a vector of element positions (indices). On its own, a list of indices like `[5, 7, 1, ...]` means nothing without referencing the underlying vector to map those positions back to actual data values.
+
+---
+
+### Question #7
+*Explain why `sort()` alone could NOT reorder the whole data frame, and why `order()` is the correct tool.*
+
+**Answer:**
+`sort()` operates on single vectors and strips or confuses row structures across multiple columns. `order()` provides the correct row index sequence needed to rearrange all columns simultaneously while maintaining row integrity.
+
+---
+
+### Question #8
+*Use `rank()` and inspect ties.*
+
+```{r}
+rank(scores)
+cbind(scores, rank = rank(scores))
+```
+
+#### a. Ranking output for Ben and Dex
+**Answer:**
+Both Ben and Dex received a rank of 6.5 because they tied for the highest scores.
+
+#### b. Explain tied ranks
+**Answer:**
+By default, `rank()` assigns the average of the rank positions that the tied elements would have occupied if they were distinct.
+
+---
+
+### Question #9
+*Create a sales data frame, add a rank column, and reorder.*
+
+```{r}
+sales <- data.frame(
+  employee = c("Rey", "Sam", "Tin", "Uma", "Val"),
+  units_sold = c(120, 145, 145, 98, 130)
+)
+
+# a. Add rank column (top seller = rank 1)
+sales$rank <- rank(-sales$units_sold)
+sales
+
+# b. Reorder sales data frame from highest to lowest units_sold
+sales[order(sales$units_sold, decreasing = TRUE), ]
+```
+
+---
+
+### Question #10
+*Could you have used `order()` alone to solve the entire problem (awarding ranks AND reordering)? Explain what `order()` is missing that `rank()` provides.*
+
+**Answer:**
+No, because `order()` only gives positional indices for sorting, whereas `rank()` computes statistical standing (including fractional handling of ties) to assign explicit rank numbers.

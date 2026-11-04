@@ -1,0 +1,129 @@
+---
+title: "Exercise 9"
+author: "Leonides Fugio Jr."
+date: "2026-11-04"
+output: html_document
+---
+
+## Part A — Creating Data Frames & Importing CSV Data
+
+### Question #1
+
+#### a. Create a data frame from the shoe size table and save it as `shoesize.csv`
+```{r}
+shoe_data <- data.frame(
+  ShoeSize = c(6.5, 9.0, 8.5, 8.5, 10.5, 7.0, 9.5, 9.0, 13.0, 7.5, 10.5, 8.5, 12.0, 10.5,
+              13.0, 11.5, 8.5, 5.0, 10.0, 6.5, 7.5, 8.5, 10.5, 8.5, 10.5, 11.0, 9.0, 13.0),
+  Height = c(66.0, 68.0, 64.5, 65.0, 70.0, 64.0, 70.0, 71.0, 72.0, 64.0, 74.5, 67.0, 71.0, 71.0,
+            77.0, 72.0, 59.0, 62.0, 72.0, 66.0, 64.0, 67.0, 73.0, 69.0, 72.0, 70.0, 69.0, 70.0),
+  Gender = c("F", "F", "F", "F", "M", "F", "F", "F", "M", "F", "M", "F", "M", "M",
+             "M", "M", "F", "F", "M", "F", "F", "M", "M", "F", "M", "M", "M", "M")
+)
+
+write.csv(shoe_data, "shoesize.csv", row.names = FALSE)
+```
+
+#### b. Import the saved CSV file and display the last 5 rows
+```{r}
+shoes <- read.csv("shoesize.csv")
+tail(shoes, 5)
+```
+
+#### c. Describe the data by showing its structure and content
+```{r}
+str(shoes)
+head(shoes)
+```
+
+#### d. Inspect its dimensions (rows and columns)
+```{r}
+dim(shoes)
+nrow(shoes)
+ncol(shoes)
+```
+**Answer:** The dataset contains 28 rows (observations) and 3 columns (variables).
+
+#### e. Inspect using `summary()`. Compare `summary()` with `str()`
+```{r}
+summary(shoes)
+```
+**Answer:** `str()` displays data types, dimensions, and raw structure, while `summary()` provides descriptive statistics (mean, min, max) for numeric columns and character counts for non-numeric columns.
+
+#### f. Create subsets for males and females
+```{r}
+female_shoes <- shoes[shoes$Gender == "F", ]
+male_shoes <- shoes[shoes$Gender == "M", ]
+
+head(female_shoes)
+head(male_shoes)
+```
+
+#### g. Find the mean of shoe size and height
+```{r}
+mean(shoes$ShoeSize)
+mean(shoes$Height)
+```
+
+#### h. Is there a relationship between shoe size and height? Why?
+**Answer:** Yes, there is a positive relationship because taller individuals generally have larger feet to maintain balance and support greater body weight.
+
+---
+
+### Question #2
+*Create factors for the `Gender` column.*
+
+```{r}
+shoes$Gender <- factor(shoes$Gender)
+str(shoes$Gender)
+```
+
+---
+
+### Question #3
+*Why does using the `.Rmd` directory as the working directory make file imports more reliable and reproducible?*
+
+**Answer:** Using the `.Rmd` directory as the working directory ensures relative file paths remain valid on any machine without relying on user-specific absolute paths.
+
+---
+
+### Question #4
+*What type did R assign to `Gender`? What could go wrong if a numeric column was accidentally imported as text?*
+
+**Answer:** `Gender` is imported as `character` (or `factor` if specified). If a numeric column is imported as text, math functions like `mean()` or `sum()` will fail with errors.
+
+---
+
+### Question #5
+*Why check both `head()` and `tail()` after importing? What import problem would `head()` miss?*
+
+**Answer:** Checking both ensures full file integrity; `head()` alone misses bottom-of-file issues like missing rows, unexpected footer text, or trailing malformed records.
+
+---
+
+### Question #6
+
+#### a. Compute the correlation between shoe size and height across all observations
+```{r}
+cor(shoes$ShoeSize, shoes$Height)
+```
+
+#### b. Return all rows where `ShoeSize` is greater than or equal to 11
+```{r}
+shoes[shoes$ShoeSize >= 11, ]
+```
+
+---
+
+### Question #7
+*Compare mean height and shoe size between female and male subsets, and explain gender differences.*
+
+```{r}
+# Mean comparison scripts
+mean(female_shoes$ShoeSize)
+mean(female_shoes$Height)
+
+mean(male_shoes$ShoeSize)
+mean(male_shoes$Height)
+```
+
+**Answer:** Males have higher average heights and larger shoe sizes than females. Gender is a key confounding variable that must be controlled for when studying height and shoe size relationships.
