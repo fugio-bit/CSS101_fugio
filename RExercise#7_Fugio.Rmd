@@ -1,0 +1,123 @@
+---
+title: "Exercise 7"
+author: "Leonides Fugio Jr."
+date: "2026-11-08"
+output: html_document
+---
+
+## Part A — Creating Data Frames & Survey Data Analysis
+
+### TODO: Confirm all vectors have the same length (20 respondents)
+```{r}
+Respondent <- 1:20
+Sex <- c(2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 2)
+FathersOccupation <- c(3, 3, 3, 3, 1, 2, 3, 1, 1, 1, 3, 2, 1, 3, 3, 1, 3, 1, 2, 1)
+PersonsAtHome <- c(5, 7, 3, 8, 5, 9, 6, 7, 8, 4, 7, 5, 4, 7, 8, 8, 3, 11, 7, 6)
+SiblingsAtSchool <- c(6, 4, 3, 1, 2, 1, 5, 3, 1, 2, 3, 2, 5, 5, 2, 1, 2, 5, 3, 2)
+TypesOfHouses <- c(1, 2, 3, 1, 1, 3, 3, 1, 2, 3, 2, 3, 2, 2, 3, 3, 3, 3, 3, 2)
+
+length(Respondent)
+length(Sex)
+length(FathersOccupation)
+length(PersonsAtHome)
+length(SiblingsAtSchool)
+length(TypesOfHouses)
+```
+
+### TODO: Combine all six vectors into a data frame called `survey`
+```{r}
+survey <- data.frame(
+  Respondent = Respondent,
+  Sex = Sex,
+  FathersOccupation = FathersOccupation,
+  PersonsAtHome = PersonsAtHome,
+  SiblingsAtSchool = SiblingsAtSchool,
+  TypesOfHouses = TypesOfHouses
+)
+survey
+```
+
+### a. Describe the data (structure or summary)
+```{r}
+str(survey)
+summary(survey)
+```
+
+### b. Check dimensions (rows and columns)
+```{r}
+dim(survey)
+nrow(survey)
+ncol(survey)
+```
+**Answer:** The survey data frame has 20 rows and 6 columns.
+
+### c. Create factors for Sex, Father's Occupation, and Types of Houses
+```{r}
+survey$Sex <- factor(survey$Sex, levels = c(1, 2), labels = c("Male", "Female"))
+survey$FathersOccupation <- factor(survey$FathersOccupation, levels = c(1, 2, 3), labels = c("Farmer", "Driver", "Others"))
+survey$TypesOfHouses <- factor(survey$TypesOfHouses, levels = c(1, 2, 3), labels = c("Wood", "Semi-Concrete", "Concrete"))
+str(survey)
+```
+
+### d. Get the mean for all columns
+```{r}
+sapply(survey, function(x) if(is.numeric(x)) mean(x) else "Factor")
+```
+
+### e. Extract the 1st five rows and all columns
+```{r}
+survey[1:5, ]
+```
+
+### f. Select variable `TypesOfHouses` and store as `types_houses`
+```{r}
+types_houses <- survey$TypesOfHouses
+types_houses
+```
+
+### g. Select all Male respondents whose father's occupation was farmer
+```{r}
+survey[survey$Sex == "Male" & survey$FathersOccupation == "Farmer", ]
+```
+
+### h. Select all Female respondents with >= 5 siblings attending school
+```{r}
+survey[survey$Sex == "Female" & survey$SiblingsAtSchool >= 5, ]
+```
+
+---
+
+## Lab Questions & Answers
+
+### Question #2
+*Why is checking that all vectors have the same length necessary specifically for survey data like this, where every column represents an answer from the SAME 20 respondents?*
+
+**Answer:** Checking vector lengths ensures every respondent has a corresponding value for each variable, preventing structural misalignment when building the rectangular data frame.
+
+### Question #3
+*Looking at the legend, which columns are nominal categories and which are counts? Why is treating a category like Sex as a quantity to average misleading?*
+
+**Answer:** Sex, FathersOccupation, and TypesOfHouses are nominal categories, while PersonsAtHome and SiblingsAtSchool are counts. Averaging nominal numeric codes is misleading because the numbers are arbitrary category labels rather than true quantities.
+
+### Question #4
+*If you filter on numeric codes rather than words, how could someone unfamiliar with the legend misinterpret it? What does this illustrate about working with coded data?*
+
+**Answer:** Someone unfamiliar with the legend might misinterpret numeric codes as literal scores or counts. This illustrates why coded categorical data should be labeled or converted into factors before analysis.
+
+### Question #5
+*Out of 20 respondents, how many are Male (`Sex == 1`)? Does this small sample size change confidence in generalizing to a larger population?*
+
+```{r}
+sum(survey$Sex == "Male")
+```
+**Answer:** There are 3 male respondents. This small sample size significantly reduces confidence in generalizing patterns because it fails to represent a broader population adequately.
+
+### Question #6
+*Run `summary()`. Every column shows numeric summary statistics including Sex and TypesOfHouses. Why doesn't R know by itself that these columns are categorical?*
+
+**Answer:** R treats plain numbers as continuous numeric data by default when imported, remaining unaware of external coding schemas until explicitly converted into factors.
+
+### Question #7
+*Compare the mean of `PersonsAtHome` to the mean of `Sex` in your summary output. Which of these two means is meaningful to report?*
+
+**Answer:** The mean of `PersonsAtHome` is meaningful because it represents an actual quantitative count of people, whereas the mean of coded categorical variables like `Sex` is statistically invalid.
